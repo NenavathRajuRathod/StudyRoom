@@ -1,0 +1,52 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for  note in  notes%}
+        <div class="col-md-3">
+            <a href="{% url 'notes_detail' note.id %}">
+                <div class="card">
+                    <div class="card-header">{{note.title}}</div>
+                    <div class="card-body">{{note.description|slice:"0:100"}}</div>
+                    <div class="card-footer mt-auto ">
+                        <a href="{% url 'deletenotes' note.id %}">
+                            <i class="fa fa-trash fa-2x"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        <br><br>
+
+    </div>
+</div>
+<br><br>
+<div class="container">
+    <form method="POST" style="max-width: 500px; margin: auto;">
+        {% csrf_token %}
+        <fieldset class="form-group" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px;">
+            <legend class="border-bottom mb-4" style="font-size: 24px; color: #333;">Create Notes</legend>
+            <div class="form-group">
+                <label for="id_title" style="font-weight: bold;">Title:</label>
+                <input type="text" class="form-control" id="id_title" name="title" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div class="form-group">
+                <label for="id_content" style="font-weight: bold;">Content:</label>
+                <textarea class="form-control" id="id_content" name="desc" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+            </div>
+        </fieldset>
+        <div class="form-group" style="text-align: left;">
+            <button href="" class="btn btn-outline-info" type="submit" style="padding: 10px 20px; font-size: 18px; border-radius: 5px;">Create</button>
+        </div>
+        {% csrf_token %}
+    </form>
+</div>
+
+
+
+{% endblock content %}

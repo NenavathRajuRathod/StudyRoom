@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block owncss %}
+
+    <style>
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Light background color */
+            color: #343a40; /* Dark text color */
+        }
+
+        .profile-container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #f0f0f0; /* Light gray background for container */
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #7f89f9; /* Dark background for user details */
+            border-radius: 8px;
+            color: #fff; /* White text color */
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .edit-profile-btn {
+            background-color: #007bff; /* Blue button color */
+            color: #fff; /* White text color */
+            border: 2px solid #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #fff;
+            color: #007bff;
+        }
+
+        .user-info {
+            text-align: left;
+            color: #fff;
+        }
+
+        .user-info h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+        }
+
+        .user-info-table {
+            margin-top: 30px;
+            background-color: #a9f49e; /* White background for personal information table */
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info-table h3 {
+            background-color: #343a40; /* Dark gray header color */
+            color: #fff; /* White text color */
+            padding: 15px;
+            border-radius: 5px;
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .user-info-table table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .user-info-table th,
+        .user-info-table td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            color: #343a40; /* Dark text color */
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            padding: 15px;
+        }
+
+        .table th {
+            background-color: #343a40; /* Dark gray header color */
+            color: #fff; /* White text color */
+        }
+
+        .order-item,
+        .wishlist-item {
+            border-bottom: 1px solid #ddd; /* Light gray border between items */
+        }
+
+        .nested-table {
+            background-color: #f0f8ff; /* AliceBlue background color for nested table */
+            width: 100%;
+        }
+
+        .nested-table th,
+        .nested-table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #007bff;
+        }
+
+        .nested-table th {
+            background-color: #007bff; /* Blue header color */
+            color: #fff; /* White text color */
+        }
+    </style>
+{% endblock owncss %}
+
+{% block content %}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h2 style="color: #d605e9;">Your Profile</h2>
+    </div>
+    <section class="text-center">
+        <div class="container">
+            {% if not todo_done %}
+            <h2>Due ToDos</h2>
+            <table class="table table-striped table-bordered table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for todo in todos %}
+                    <tr>
+                        <td>{{ todo.title }}</td>
+                        <td>
+                            <a href="{% url 'updatetodo' todo.id %}">
+                                <div class="form-check">
+                                    {% if todo.status %}
+                                        <input class="form-check-input" type="checkbox" value="" checked>
+                                    {% else %}
+                                        <input class="form-check-input" type="checkbox" value="">
+                                    {% endif %}
+                                    <label class="form-check-label text-light" for="flexCheckDefault">
+                                        Mark as Completed
+                                    </label>
+                                </div>
+                            </a>
+                        </td>
+                        <td><a href="{% url 'deletetodo' todo.id %}"><i class="fa fa-trash fa-2x"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h3>All To dos are completed!!!!</h3>
+            {% endif %}
+            <a href="/todo/" class="btn btn-primary">Add ToDos</a>
+        </div>
+    </section>
+
+    <section class="text-center">
+        <div class="container">
+            {% if not notes_done %}
+            <h2>Due Notes</h2>
+            <table class="table table-striped table-bordered table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for note in notes %}
+                    <tr>
+                        <td>{{ note.title }}</td>
+                        <td>
+                            <a href="{% url 'updatenote' note.id %}">
+                                <div class="form-check">
+                                    {% if note.status %}
+                                        <input class="form-check-input" type="checkbox" value="" checked>
+                                    {% else %}
+                                        <input class="form-check-input" type="checkbox" value="">
+                                    {% endif %}
+                                    <label class="form-check-label text-light" for="flexCheckDefault">
+                                        Mark as Completed
+                                    </label>
+                                </div>
+                            </a>
+                        </td>
+                        <td><a href="{% url 'deletenote' note.id %}"><i class="fa fa-trash fa-2x"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h3>All Notes are completed!!!!</h3>
+            {% endif %}
+            <!-- <a href="/notes/" class="btn btn-primary">Add Notes</a> -->
+            <a href="/notes/" class="btn btn-primary">Add Notes</a>
+        </div>
+    </section>
+</div>
+
+{% endblock content %}
+
+{% block ownjs %}
+<!-- Bootstrap and jQuery JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock ownjs %}
+
+
+
+
+
+

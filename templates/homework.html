@@ -1,0 +1,96 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
+
+<div class="container">
+    {% if not homework_done %}
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+            <tr>
+              
+                <th scope="col">Subject</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Due</th>
+                <th scope="col">Status</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for work in  homework %}
+            <tr>
+               
+                <td>{{work.subject}}</td>
+                <td>{{work.title}}</td>
+                <td>{{work.desc}}</td>
+                <td>{{work.desc}}</td>
+
+                <td>
+                    <a href="{% url 'updatehomework' work.id%}">
+                        <div class="form-check">
+                            {% if work.status %}
+                                <input class="form-check-input" type="checkbox" value="" checked>
+                            {% else %}
+                                <input class="form-check-input" type="checkbox" value="">
+                            {% endif %}
+                            <label class="form-check-label text-light" for="flexCheckDefault">
+                                    Mark as Completed
+                            </label>
+                        </div>
+                        
+                    </a>
+                </td>
+                <td><a href="{% url 'deletehomework' work.id %}"><i class="fa fa-trash fa-2x"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {%else%}
+    <center><h4>All homeworks are completed!! Create to have more!!</h4></center>
+</div>
+{% endif %}
+<div class=" container">
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Homework</title>
+</head>
+<body>
+
+<div style="max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset style="border: none;">
+            <legend style="font-size: 24px; font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 20px;">Create Homework</legend>
+            <div style="margin-bottom: 20px;">
+                <label for="subject" style="font-weight: bold; display: block; margin-bottom: 5px;">Subject:</label>
+                <input type="text" id="subject" name="subject" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="title" style="font-weight: bold; display: block; margin-bottom: 5px;">Title:</label>
+                <input type="text" id="title" name="title" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="desc" style="font-weight: bold; display: block; margin-bottom: 5px;">Description:</label>
+                <textarea id="desc" name="desc" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="due" style="font-weight: bold; display: block; margin-bottom: 5px;">Due Date:</label>
+                <input type="date" id="due" name="due" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+        </fieldset>
+        <div style="text-align: center;">
+            <button type="submit" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Create</button>
+        </div>
+        <!-- CSRF Token -->
+        {% csrf_token %}
+    </form>
+</div>
+
+</body>
+</html>
+
+</div>
+{% endblock content %}

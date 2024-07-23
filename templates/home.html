@@ -1,0 +1,161 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
+<section class="container text-center">
+  <h1 style="font-family: 'Arial', sans-serif; color: #c408c4; text-align: center; font-size: 36px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);">Welcome To PrepGenius</h1>
+
+
+  <hr> <br>
+      <!-- 0 th row of cards -->
+      <div class="row">
+        <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+          <a href="/mockinterview/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+              <img class="card-img-top" src="{% static 'images/mockinterview.jpg' %}" alt="Mock image">
+              <div class="card-body">
+                <h5 class="card-title">
+                  Mock Interview
+                </h5>
+                Simulate real interviews with tailored questions to enhance your preparation.
+              </div>
+            </div>
+          </a>
+        </div>
+    
+        <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+          <a href="/dsa/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+              <img class="card-img-top" src="{% static 'images/dsa.jpg' %}" alt="Books image">
+              <div class="card-body">
+                <h5 class="card-title">
+                  Data Structures And Algorithms
+                </h5>
+                Simulate real interviews with tailored questions to enhance your preparation.
+              </div>
+            </div>
+          </a>
+        </div>
+    
+        <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+          <a href="/csfundamentals/" style="text-decoration: none; color: inherit;">
+            <div class="card">
+              <img class="card-img-top" src="{% static 'images/csfundamentals.jpg' %}" alt="Dictionary image">
+              <div class="card-body">
+                <h5 class="card-title">
+                  CS Fundaments
+                </h5>
+                Explore key CS concepts to strengthen your understanding of foundational principles
+              </div>
+            </div>
+          </a>
+        </div>
+    <div>
+      <!-- End of 0th row -->
+      <br><br><br>
+  <!-- First row of cards -->
+  <div class="row">
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/notes/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/notes.jpg' %}" alt="Notes image">
+          <div class="card-body">
+            <h5 class="card-title">
+              Notes
+            </h5>
+            Organize and review important study notes for efficient learning and reference
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/homework/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/homework.jpg' %}" alt="Homework image">
+          <div class="card-body">
+            <h5 class="card-title">
+              Homework
+            </h5>
+            Track and manage homework assignments to stay organized and meet deadlines
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/youtube/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/youtube.jpg' %}" alt="Youtube image">
+          <div class="card-body">
+            <h5 class="card-title">
+              Youtube
+            </h5>
+            Search and find relevant educational videos to supplement your learning
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <!-- End of first row -->
+
+  <br><br><br>
+
+  <!-- Second row of cards -->
+  <div class="row">
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/todo/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/todo.jpg' %}" alt="Todo image">
+          <div class="card-body">
+            <h5 class="card-title">
+              To Do
+            </h5>
+            Create, organize, and manage daily tasks to stay on top of your schedule
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/books/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/books.jpg' %}" alt="Books image">
+          <div class="card-body">
+            <h5 class="card-title">
+              Books
+            </h5>
+            Search for and access online books to enhance your study and research
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4" style="height: 100%; border: 1px solid #ccc; border-radius: 8px; transition: box-shadow 0.3s ease;">
+      <a href="/dict/" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <img class="card-img-top" src="{% static 'images/dictionary.jpg' %}" alt="Dictionary image">
+          <div class="card-body">
+            <h5 class="card-title">
+              Dictionary
+            </h5>
+            Quickly look up word definitions and meanings using an online dictionary.
+          </div>
+        </div>
+      </a>
+    </div>
+
+  <div>
+  
+  <!-- End of second row -->
+  <br><br><br>
+  
+
+ 
+
+
+
+
+
+</section>
+{% endblock content %}

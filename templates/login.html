@@ -1,0 +1,49 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<br><br>
+<div class="card bg-dark p-5" style="width: 400px; margin: 0 auto;">
+
+  
+
+  <center><h3 class="text-light">Login</h3></center>
+
+  <form action="/auth/login/" method="post" style="color: #fff;">
+
+    {% csrf_token %}
+    <br />
+
+    <label for="email">Email</label>
+    <div class="form-group">
+      <input
+        type="email"
+        class="form-control p-2"
+        id="email"
+        name="email"
+        required
+        style="width: 100%;"
+      />
+    </div>
+
+    <label for="pass1">Password</label>
+    <div class="form-group">
+      <input
+        type="password"
+        class="form-control p-2"
+        id="pass1"
+        name="pass1"
+        required
+        style="width: 100%;"
+      />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success" style="width: 100%;">Login</button>
+    <br>
+    <center>New User? <a href="/auth/signup/" style="color: #4caf50;">Signup</a></center>
+    <br />
+  </form>
+</div>
+
+
+{% endblock content %}

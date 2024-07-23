@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block owncss %}
+<style>
+    .center-table {
+        margin: 0 auto;
+        text-align: center;
+        border-collapse: collapse;
+        width: 80%;
+        /* border: 5px solid rgba(0, 0, 0, 0.521); */
+    }
+    .center-table th, .center-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+       
+    }
+    .center-table th {
+        background-color: #f2f2f2;
+        color: black;
+    }
+    .center-table tr:hover {
+        background-color: #6a686a;
+    }
+    .center-table th, .center-table td {
+        padding: 12px;
+    }
+    .page-heading {
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+        color:rgb(185, 97, 42);
+        text-shadow: 1px 1px 1px black;
+    }
+</style>
+{% endblock owncss %}
+
+{% block content %}
+<div style="text-align: center;">
+    <div class="page-heading">Ultimate Collection of CS Fundamentals source for Interviews</div>
+    <table class="center-table">
+        <thead>
+            <tr>
+                <th style="background-color: rgb(175, 106, 227); color: white;">Sheet</th>
+                <th style="background-color: rgb(175, 106, 227); color: white;">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Love Babbar's OOPS CHECK LIST</td>
+                <td>
+                    <a href="https://whimsical.com/object-oriented-programming-cheatsheet-by-love-babbar-YbSgLatbWQ4R5paV7EgqFw">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Love Babbar's OS CHECK LIST</td>
+                <td>
+                    <a href="https://whimsical.com/operating-system-cheatsheet-by-love-babbar-S9tuWBCSQfzoBRF5EDNinQ">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Love Babbar's DBMS CHECK LIST</td>
+                <td>
+                    <a href="https://whimsical.com/dbms-roadmap-by-love-babbar-FmUi8ffVop33t3MmpVxPCo">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Love Babbar's CN CHECK LIST</td>
+                <td>
+                    <a href="https://whimsical.com/networking-cheatsheet-by-love-babbar-FcLExFDezehhfsbDPfZDBv">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Stiver's DBMS NOTES</td>
+                <td>
+                    <a href="https://takeuforward.org/dbms/most-asked-dbms-interview-questions">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Stiver's OS NOTES</td>
+                <td>
+                    <a href="https://takeuforward.org/operating-system/most-asked-operating-system-interview-questions">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Stiver's CN NOTES</td>
+                <td>
+                    <a href="https://takeuforward.org/computer-network/most-asked-computer-networks-interview-questions">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>GFG's ALL IN ONE</td>
+                <td>
+                    <a href="https://www.geeksforgeeks.org/articles-on-computer-science-subjects-gq/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block ownjs %}
+<!-- Add any custom JavaScript here if needed -->
+{% endblock ownjs %}
+

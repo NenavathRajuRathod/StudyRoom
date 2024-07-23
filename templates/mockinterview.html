@@ -1,0 +1,552 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block owncss %}
+<style>
+    /* Styling the form container */
+    .interview-container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+        background: #ffffff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+
+    /* Styling the fieldset and legend */
+    fieldset {
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-legend {
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #f40e0e;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Styling form groups */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    /* Styling labels and checkboxes */
+    #skills-form label {
+        display: flex;
+        align-items: center;
+        font-size: 1.1em;
+        color: #555;
+    }
+
+    #skills-form input[type="checkbox"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    /* Styling the button */
+    #start-interview-btn {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2em;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #start-interview-btn:hover {
+        background-color: #45a049;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .interview-container {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #skills-form {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    #interview-section {
+        
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items:center;
+        
+     
+    }
+
+    .question-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .video-container {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        height:50%;
+        
+    }
+
+    button {
+        margin: 5px;
+    }
+
+    #next-question-btn, #stop-interview-btn, #download-video-btn, #save-video-btn {
+        width: auto;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #008CBA;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #next-question-btn:hover, #stop-interview-btn:hover, #download-video-btn:hover, #save-video-btn:hover {
+        background-color: #007bb5;
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    #interview-question {
+        max-width: 45%;
+        word-wrap: break-word;
+    }
+
+    #video-container video {
+        max-width: 100%;
+       
+    }
+</style>
+{% endblock owncss %}
+
+{% block content %}
+<div class="interview-container">
+    <form id="skills-form">
+        <fieldset>
+            <legend class="form-legend">Select Your Skills</legend>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="DSA"> Data Structures & Algorithms</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="OS"> Operating Systems</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="DBMS"> Database Management Systems</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="OOPS"> Object Oriented Programming</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="CN"> Computer Networks</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="WEBDEV"> Web Development</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" name="skills" value="PROJECT"> Projects</label>
+            </div>
+            <div class="form-group">
+                <button type="button" id="start-interview-btn">Start Interview</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <div id="interview-section" class="hidden">
+       
+            <p id="interview-question"></p>
+        
+        <div class="buttons-container">
+            <button type="button" id="next-question-btn" class="hidden">Next Question</button>
+            <button type="button" id="stop-interview-btn" class="hidden">Stop Interview</button>
+        </div>
+        <div class="video-container hidden" id="video-container">
+            <video id="interview-video" autoplay muted></video>
+            <button type="button" id="download-video-btn" class="hidden">Download Interview Now</button>
+           
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block ownjs %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const startInterviewBtn = document.getElementById('start-interview-btn');
+    const stopInterviewBtn = document.getElementById('stop-interview-btn');
+    const nextQuestionBtn = document.getElementById('next-question-btn');
+    const downloadVideoBtn = document.getElementById('download-video-btn');
+    
+    const interviewSection = document.getElementById('interview-section');
+    const interviewQuestion = document.getElementById('interview-question');
+    const videoContainer = document.getElementById('video-container');
+    const videoElement = document.getElementById('interview-video');
+
+    let mediaRecorder;
+    let recordedChunks = [];
+    let questions = [];
+    let intervalId;
+
+    startInterviewBtn.addEventListener('click', async () => {
+        const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked')).map(cb => cb.value);
+        if (selectedSkills.length === 0) {
+            alert('Please select at least one skill.');
+            return;
+        }
+
+        questions = await fetchQuestions(selectedSkills);
+        if (questions.length === 0) {
+            alert('No questions available for the selected skills.');
+            return;
+        }
+
+        interviewSection.classList.remove('hidden');
+        videoContainer.classList.remove('hidden');
+        document.getElementById('skills-form').classList.add('hidden');
+        startRecording();
+        displayNextQuestion();
+        nextQuestionBtn.classList.remove('hidden');
+        stopInterviewBtn.classList.remove('hidden');
+    });
+
+    stopInterviewBtn.addEventListener('click', () => {
+        stopRecording();
+        nextQuestionBtn.classList.add('hidden');
+        stopInterviewBtn.classList.add('hidden');
+        downloadVideoBtn.classList.remove('hidden');
+        saveVideoBtn.classList.remove('hidden');
+        clearInterval(intervalId);  // Stop the interval when the interview is stopped
+    });
+
+    nextQuestionBtn.addEventListener('click', () => {
+        displayNextQuestion();
+    });
+
+    downloadVideoBtn.addEventListener('click', () => {
+        downloadRecording();
+    });
+
+    saveVideoBtn.addEventListener('click', () => {
+        saveRecording();
+    });
+
+    async function fetchQuestions(skills) {
+        const questionsBySubject = {
+'DSA': [
+    '<a href="https://leetcode.com/problems/two-sum/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/add-two-numbers/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/longest-palindromic-substring/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/zigzag-conversion/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/reverse-integer/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/string-to-integer-atoi/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/palindrome-number/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/container-with-most-water/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/roman-to-integer/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/longest-common-prefix/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/3sum/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/3sum-closest/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/letter-combinations-of-a-phone-number/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/4sum/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/valid-parentheses/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/merge-two-sorted-lists/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/generate-parentheses/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/swap-nodes-in-pairs/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/reverse-nodes-in-k-group/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/remove-element/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/implement-strstr/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/divide-two-integers/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/subsets/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/combination-sum/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/combination-sum-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/first-missing-positive/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/trapping-rain-water/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/multiply-strings/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/wildcard-matching/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/jump-game-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/permutations/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/rotate-image/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/group-anagrams/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/powx-n/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/n-queens/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/maximum-subarray/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/spiral-matrix/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/jump-game/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/merge-intervals/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/insert-interval/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/length-of-last-word/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/spiral-matrix-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/permutation-sequence/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/rotate-list/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/unique-paths/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/unique-paths-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/minimum-path-sum/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/valid-number/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/sudoku-solver/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/edit-distance/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/set-matrix-zeroes/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/search-a-2d-matrix/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/sort-colors/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/combinations/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/subsets-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/word-search/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/maximal-rectangle/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/valid-palindrome/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/word-ladder/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/word-ladder-ii/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/single-number/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/copy-list-with-random-pointer/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/least-recently-used-cache/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/integer-to-roman/" target="_blank" style="color:blue;">Click here to solve Problem</a>',
+    '<a href="https://leetcode.com/problems/multiply-strings/" target="_blank" style="color:blue;">Click here to solve Problem</a>'
+],
+
+    'OS': [
+        'What is the main purpose of an operating system? Discuss different types.',
+        'What is a socket, kernel, and monolithic kernel?',
+        'Difference between process, program, and thread? Different types of process.',
+        'Define virtual memory, thrashing, threads.',
+        'What is RAID? Different types.',
+        'What is a deadlock? Different conditions to achieve a deadlock.',
+        'What is fragmentation? Types of fragmentation.',
+        'What is spooling?',
+        'What is semaphore and mutex? Define Binary semaphore.',
+        'Belady’s Anomaly, Starving, and Aging in OS.',
+        'Why does trashing occur?',
+        'What is paging and why do we need it?',
+        'Demand Paging, Segmentation.',
+        'Real-Time Operating System, types of RTOS.',
+        'Difference between main memory and secondary memory.',
+        'Dynamic Binding.',
+        'FCFS Scheduling, SJF Scheduling, SRTF Scheduling, LRTF Scheduling.',
+        'Priority Scheduling, Round Robin Scheduling.',
+        'Producer-Consumer Problem, Banker’s Algorithm.',
+        'Explain Cache, Diff between direct mapping and associative mapping.',
+        'Diff between multitasking and multiprocessing.'
+    ],
+    'DBMS': [
+        'What is DBMS? Mention advantages.',
+        'What is a Database?',
+        'What is a database system?',
+        'What is RDBMS? Properties.',
+        'Types of database languages.',
+        'ACID properties.',
+        'Difference between vertical and horizontal scaling.',
+        'What is sharding?',
+        'Keys in DBMS, Types of relationship.',
+        'Data abstraction in DBMS, three levels of it.',
+        'Indexing in DBMS.',
+        'What is DDL (Data Definition Language)?',
+        'What is DML (Data Manipulation Language)?',
+        'What is normalization? Types of them.',
+        'What is denormalization?',
+        'What is functional dependency?',
+        'E-R Model?',
+        'Conflict Serializability in DBMS.',
+        'Explain Normal forms in DBMS.',
+        'What is CCP? (Concurrency Control Protocols).',
+        'Entity, Entity Type, Entity Set, Weak Entity Set.',
+        'What are SQL commands? Types of them.',
+        'Nested Queries in SQL?',
+        'What is JOIN? Explain types of JOINs, Inner and Outer Join.',
+        'Practice SQL queries from LeetCode.',
+        'Diff between 2-tier and 3-tier architecture.',
+        'Diff between TRUNCATE and DELETE command.',
+        'Difference between Intension and Extension in a DataBase.',
+        'Difference between share lock and exclusive lock, definition of lock.'
+    ],
+    'OOPS': [
+        'What is OOPs? Explain its principles.',
+        'What are the four pillars of OOP? Explain each with an example.',
+        'What is encapsulation? How does it help in implementing data hiding in Java?',
+        'Explain inheritance and its types in OOP.',
+        'What is polymorphism? Explain with an example.',
+        'What is abstraction? How is it different from encapsulation?',
+        'What is the difference between abstract class and interface?',
+        'What is method overloading and method overriding?',
+        'Explain the concept of constructor in OOP. Types of constructors.',
+        'What is the difference between stack and heap memory?',
+        'What is a static keyword in Java? How and when would you use it?',
+        'What are access modifiers in Java? Explain public, private, protected, and default.',
+        'What is composition in OOP? How is it different from inheritance?',
+        'What is the difference between association, aggregation, and composition?',
+        'Explain the SOLID principles of object-oriented design.',
+        'What is a design pattern? Give examples of some commonly used design patterns.',
+        'What is coupling and cohesion in OOP? How do they affect software design?',
+        'What is serialization and deserialization? Why are they important in Java?',
+        'Explain the difference between method hiding and method overriding.',
+        'What are the benefits of using interfaces in Java?',
+        'What is a singleton class? How would you implement it in Java?',
+        'Explain the concept of garbage collection in Java.',
+        'What is method chaining in Java? Provide an example.',
+        'What is the difference between shallow copy and deep copy?',
+        'Explain the role of the final keyword in Java.',
+        'What are abstract data types? Provide examples.',
+        'How does Java support multiple inheritance?',
+        'Explain the concept of generics in Java. Provide examples.',
+        'What is the difference between composition and aggregation?',
+        'Explain the concept of overloading and overriding in Java.'
+    ],
+    'CN': [
+        'Define network.',
+        'What do you mean by network topology, and explain types of them?',
+        'Define bandwidth, node, and link.',
+        'Explain TCP model, Layers of OSI model.',
+        'Significance of Data Link Layer.',
+        'Define gateway, difference between gateway and router.',
+        'What does ping command do?',
+        'What is DNS, DNS forwarder, NIC?',
+        'What is MAC address?',
+        'What is IP address, private IP address, public IP address, APIPA?',
+        'Difference between IPv4 and IPv6.',
+        'What is subnet?',
+        'Firewalls.',
+        'Different types of delays.',
+        '3-way handshaking.',
+        'Server-side load balancer.',
+        'RSA Algorithm.',
+        'What is HTTP and HTTPS protocol?',
+        'What is SMTP protocol?',
+        'TCP and UDP protocol, prepare differences.',
+        'What happens when you enter “google.com”?',
+        'Hub vs Switch.',
+        'VPN, advantages and disadvantages of it.',
+        'LAN.'
+    ],
+    'WEBDEV': [
+        'What is the difference between HTML and HTML5?',
+        'Explain the CSS box model.',
+        'What are the key differences between inline, block, and inline-block elements in CSS?',
+        'Explain the concept of responsive web design.',
+        'What is the purpose of using semantic HTML?',
+        'How does CSS specificity work? Explain the importance of specificity in CSS.',
+        'What is event delegation in JavaScript? How does it work?',
+        'Explain the concept of closures in JavaScript. Provide an example.',
+        'What is AJAX and how does it work?',
+        'Explain the concept of promises in JavaScript.',
+        'What are the key features of ES6 (ECMAScript 2015)?',
+        'What is the Document Object Model (DOM) in JavaScript?',
+        'Explain the concept of routing in Django.',
+        'What is Django ORM? How does it work?',
+        'What are Django templates? How are they used?',
+        'Explain the concept of middleware in Django.',
+        'How does CSRF protection work in Django forms?',
+        'What are Django signals? Provide an example of their usage.',
+        'What are Django migrations? Why are they important?',
+        'Explain the use of Django\'s class-based views vs. function-based views.',
+        'What are Django forms? How are they validated?',
+        'Explain Django authentication system. How does it handle user authentication?',
+        'What is Django REST framework? How is it used for building APIs?',
+        'How does Django handle static files and media files?',
+        'What are Django settings? How are they configured?',
+        'Explain Django caching. How can you implement caching in Django?',
+        'What are Django signals? How are they used?',
+        'How does Django handle database migrations?',
+        'What are Django middleware? How are they used?',
+        'Explain the use of Django\'s CSRF protection.'
+    ],
+    'PROJECT': [
+        'Discuss a project you worked on recently.',
+        'How did you handle challenges in your project?',
+        'How do you prioritize tasks in a project?',
+        'Explain a situation where you had to lead a team through a project.',
+        'What project management tools have you used?',
+        'How do you ensure project requirements are met?',
+        'What strategies do you use to manage project scope?',
+        'Describe a successful project implementation.',
+        'How do you handle changes in project requirements or scope?',
+        'What is your approach to documenting project progress and outcomes?'
+    ]
+    };
+
+        let filteredQuestions = [];
+        for (const skill of skills) {
+            if (questionsBySubject[skill]) {
+                filteredQuestions = [...filteredQuestions, ...questionsBySubject[skill]];
+            }
+        }
+
+        return filteredQuestions;
+    }
+
+    function displayNextQuestion() {
+        if (questions.length === 0) {
+            alert('No more questions available.');
+            return;
+        }
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        const question = questions[randomIndex];
+        interviewQuestion.innerHTML = question;
+    }
+
+    async function startRecording() {
+        recordedChunks = [];
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        videoElement.srcObject = stream;
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.start();
+        intervalId = setInterval(displayNextQuestion,30000*1000);  // Display a new question every 30 seconds
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        videoElement.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    function downloadRecording() {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'interview.webm';
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+
+});
+
+
+
+</script>
+{% endblock ownjs %}

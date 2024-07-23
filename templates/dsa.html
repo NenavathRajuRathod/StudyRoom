@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block owncss %}
+<style>
+    .center-table {
+        margin: 0 auto;
+        text-align: center;
+        border-collapse: collapse;
+        width: 80%;
+        /* border: 5px solid rgba(0, 0, 0, 0.521); */
+    }
+    .center-table th, .center-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+       
+    }
+    .center-table th {
+        background-color: #f2f2f2;
+        color: black;
+    }
+    .center-table tr:hover {
+        background-color: #6a686a;
+    }
+    .center-table th, .center-table td {
+        padding: 12px;
+    }
+    .page-heading {
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+        color:rgb(185, 85, 42);
+        text-shadow: 1px 1px 1px black;
+    }
+</style>
+{% endblock owncss %}
+
+{% block content %}
+<div style="text-align: center;">
+    <div class="page-heading">Ultimate Collection of DSA Sheets for Interviews</div>
+    <table class="center-table">
+        <thead>
+            <tr>
+                <th style="background-color: rgb(175, 106, 227); color: white;">Sheet</th>
+                <th style="background-color:rgb(175, 106, 227); color: white;">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Love Babbar's DSA SHEET</td>
+                <td>
+                    <a href="https://www.geeksforgeeks.org/explore?page=1&sprint=94ade6723438d94ecf0c00c3937dad55&sortBy=submissions&sprint_name=Love%20Babbar%20Sheet">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Stiver's DSA SHEET</td>
+                <td>
+                    <a href="https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Shredda's DSA SHEET</td>
+                <td>
+                    <a href="https://docs.google.com/spreadsheets/d/1hXserPuxVoWMG9Hs7y8wVdRCJTcj3xMBAEYUOXQ5Xag/edit?gid=0#gid=0">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Faraz's DSA SHEET</td>
+                <td>
+                    <a href="https://docs.google.com/spreadsheets/d/1-wKcV99KtO91dXdPkwmXGTdtyxAfk1mbPXQg81R9sFE/edit?gid=0#gid=0">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Geeksforgeeks's DSA SHEET</td>
+                <td>
+                    <a href="https://www.geeksforgeeks.org/sde-sheet-a-complete-guide-for-sde-preparation/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Company wise DSA SHEET</td>
+                <td>
+                    <a href="https://www.geeksforgeeks.org/must-coding-questions-company-wise/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Leetcode 150 DSA SHEET</td>
+                <td>
+                    <a href="https://leetcode.com/studyplan/top-interview-150/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Leetcode Grid 75 DSA SHEET</td>
+                <td>
+                    <a href="https://leetcode.com/studyplan/leetcode-75/">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>HacckerRank kit DSA SHEET</td>
+                <td>
+                    <a href="https://www.hackerrank.com/interview/interview-preparation-kit">
+                        Link
+                    </a>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block ownjs %}
+<!-- Add any custom JavaScript here if needed -->
+{% endblock ownjs %}
